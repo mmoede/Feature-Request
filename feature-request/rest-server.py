@@ -104,7 +104,7 @@ class FeatureAPI(Resource):
         self.reqparse.add_argument('description', type=str, location='json')
         self.reqparse.add_argument('client', type=str, location='json')
         self.reqparse.add_argument('client_priority', type=int, location='json')
-        self.reqparse.add_argument('target_date', type=lambda x: datetime.strptime(x, '%Y-%m-%d'), location='json')
+        self.reqparse.add_argument('target_date', type=lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'), location='json')
         self.reqparse.add_argument('product_area', type=str, location='json')
         super(FeatureAPI, self).__init__()
 
