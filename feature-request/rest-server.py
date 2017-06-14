@@ -68,7 +68,7 @@ class FeatureListAPI(Resource):
 
     def get(self):
         features = models.Feature.query.all()
-        return {'features': [marshal(features, feature_fields)]}
+        return {'features': marshal(features, feature_fields)}
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -191,7 +191,7 @@ class OrderAllAPI(Resource):
             features = models.Feature.query.order_by(models.Feature.product_area.desc()).all()
         else:
             abort(404)
-        return {'features': [marshal(features, feature_fields)]}
+        return {'features': marshal(features, feature_fields)}
 
 class ClientAPI(Resource):
     decorators = [auth.login_required]
@@ -205,7 +205,7 @@ class ClientAPI(Resource):
 
     def get(self):
         clients = models.Client.query.all()
-        return {'clients': [marshal(clients, client_fields)]}
+        return {'clients': marshal(clients, client_fields)}
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -215,7 +215,7 @@ class ClientAPI(Resource):
         client = models.Client(name=args['name'])
         db.session.add(client)
         db.session.commit()
-        return {'client': marshal(client, client_fields)}, 201
+        return {'client': [marshal(client, client_fields)]}, 201
 
 
 api.add_resource(FeatureListAPI, '/requests/api/v1.0/features', endpoint='features')
