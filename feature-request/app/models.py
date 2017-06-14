@@ -6,7 +6,7 @@ class Client(db.Model):
     features = db.relationship('Feature', backref='client',lazy='dynamic')
 
     def __repr__(self):
-        return '<Client %r>' % (self.name)
+        return (self.name)
 
 class Feature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
