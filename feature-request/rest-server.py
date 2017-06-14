@@ -36,9 +36,8 @@ feature_fields = {
 }
 
 client_fields = {
-    'id': fields.Integer,
     'name': fields.String,
-    'uri': fields.Url('clients')
+    'uri': fields.Url('client')
 }
 
 class FeatureListAPI(Resource):
@@ -193,7 +192,7 @@ class OrderAllAPI(Resource):
             abort(404)
         return {'features': marshal(features, feature_fields)}
 
-class ClientAPI(Resource):
+class ClientListAPI(Resource):
     decorators = [auth.login_required]
 
     def __init__(self):
@@ -201,7 +200,7 @@ class ClientAPI(Resource):
         self.reqparse.add_argument('name', type=str, required=True,
                                    help='No name provided',
                                    location='json')
-        super(ClientAPI, self).__init__()
+        super(ClientListAPI, self).__init__()
 
     def get(self):
         clients = models.Client.query.all()
@@ -217,11 +216,26 @@ class ClientAPI(Resource):
         db.session.commit()
         return {'client': [marshal(client, client_fields)]}, 201
 
+class ClientAPI(Resource):
+    decorators = [auth.login_required]
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('name', type=str, location='json')
+        super(ClientAPI, self).__init__()
+
+    def get(self, id):
+        client = models.Client.query.filter_by(id=id).first()
+        if client is None:
+            abort(404)
+        return {'client': marshal(client, client_fields)}
+
 
 api.add_resource(FeatureListAPI, '/requests/api/v1.0/features', endpoint='features')
 api.add_resource(FeatureAPI, '/requests/api/v1.0/features/<int:id>', endpoint='feature')
 api.add_resource(OrderAllAPI, '/requests/api/v1.0/features/order/<column>/<order>', endpoint='order_all')
-api.add_resource(ClientAPI, '/requests/api/v1.0/clients', endpoint='clients')
+api.add_resource(ClientListAPI, '/requests/api/v1.0/clients', endpoint='clients')
+api.add_resource(ClientAPI, '/requests/api/v1.0/clients/<int:id>', endpoint='client')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
