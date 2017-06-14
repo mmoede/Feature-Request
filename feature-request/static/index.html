@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feature Request</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.css"/>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.4.2.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<a class="navbar-brand" href="#">Feature Request</a>
+		</div>
+	</nav>
+	<div id="main" class="container">
+		<table class="table table-striped">
+			<tr><td><b>Feature</b></td><td><b>Options</b></td></tr>
+			<!-- ko foreach: features -->
+			<tr>
+				<td>
+					<p><h4 data-bind="text: title"></h4></p>
+					<p data-bind="text: description"></p>
+					<b>Client:</b> <p data-bind="text: client"></p>
+					<b>Priority:</b> <p data-bind="text: client_priority"></p>
+					<b>Target Date:</b> <p data-bind="text: target_date"></p>
+					<b>Product Area:</b> <p data-bind="text: product_area"></p>
+				</td>
+				<td>
+					<button data-bind="click: $parent.beginEdit" class="btn">Edit</button>
+					<button data-bind="click: $parent.remove" class="btn">Delete</button>
+				</td>
+			</tr>
+			<!-- /ko -->
+		</table>
+		<button data-bind="click: beginAdd" class="btn">Add Feature</button>
+		<button data-bind="click: beginAddClient" class="btn">Add Client</button>
+	</div>
+	<div id="add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 id="addDialogLabel" class="modal-title">Add Feature</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label" for="inputFeature">Feature</label>
+							<div class="controls">
+								<input data-bind="value: title" type="text" id="inputFeature" placeholder="Feature title" style="width: 150px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputDescription">Description</label>
+							<div class="controls">
+								<input data-bind="value: description" type="text" id="inputDescription" placeholder="Description" style="width: 300px;">
+							</div>
+						</div>
+						<div class="control-group" data-bind="stopBindings: true">
+							<label class="control-label" for="inputClient">Client</label>
+							<div class="controls" id="clientSelect">
+								<select data-bind="options: clients, optionsText: 'name', optionsValue: 'name', value: name"></select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputClientPriority">Priority</label>
+							<div class="controls">
+								<input data-bind="value: client_priority" type="text" id="inputClientPriority" placeholder="Priority" style="width: 50px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputTargetDate">Target Date</label>
+							<div class="controls">
+								<input data-bind="value: target_date, datepicker: target_date" type="text" class="datepicker" id="inputTargetDate" placeholder="MM-DD-YYYY" data-date-format="mm-dd-yyyy" data-date-autoclose="true" style="width: 100px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputProductArea">Product Area</label>
+							<div class="controls">
+								<select data-bind="value: product_area" id="inputProductArea" style="width: 150px;">
+									<option value="Policies">Policies</option>
+									<option value="Billing">Billing</option>
+									<option value="Claims">Claims</option>
+									<option value="Reports">Reports</option>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" data-bind="click: addFeature" class="btn btn-primary">Add Feature</button>
+			<button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>
+	<div id="edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editDialogLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 id="editDialogLabel" class="modal-title">Edit Feature</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label" for="inputFeature">Feature</label>
+							<div class="controls">
+								<input data-bind="value: title" type="text" id="inputFeature" placeholder="Feature title" style="width: 150px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputDescription">Description</label>
+							<div class="controls">
+								<input data-bind="value: description" type="text" id="inputDescription" placeholder="Description" style="width: 300px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputClient">Client</label>
+							<div class="controls">
+								<span data-bind="text: client"></span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputClientPriority">Priority</label>
+							<div class="controls">
+								<input data-bind="value: client_priority" type="text" id="inputClientPriority" placeholder="Priority" style="width: 50px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputTargetDate">Target Date</label>
+							<div class="controls">
+								<input data-bind="value: target_date" type="text" class="datepicker" id="inputTargetDate" placeholder="MM-DD-YYYY" data-date-format="mm-dd-yyyy" data-date-autoclose="true" style="width: 100px;">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputProductArea">Product Area</label>
+							<div class="controls">
+								<select data-bind="value: product_area" id="inputProductArea" style="width: 150px;">
+									<option value="Policies">Policies</option>
+									<option value="Billing">Billing</option>
+									<option value="Claims">Claims</option>
+									<option value="Reports">Reports</option>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" data-bind="click: editFeature" class="btn btn-primary">Edit Feature</button>
+			<button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>
+	<div id="addClient" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 id="addDialogLabel" class="modal-title">Add Client</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label" for="inputClient">Name</label>
+							<div class="controls">
+								<input data-bind="value: name" type="text" id="inputClient" placeholder="Client Name" style="width: 150px;">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" data-bind="click: addClient" class="btn btn-primary">Add Client</button>
+			<button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>		
+	<script type="text/javascript" src="scripts/features_viewmodel.js"></script>
+</body>
+</html>
