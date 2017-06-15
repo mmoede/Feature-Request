@@ -214,7 +214,7 @@ class ClientListAPI(Resource):
         client = models.Client(name=args['name'])
         db.session.add(client)
         db.session.commit()
-        return {'client': [marshal(client, client_fields)]}, 201
+        return {'client': marshal(client, client_fields)}, 201
 
 class ClientAPI(Resource):
     decorators = [auth.login_required]
