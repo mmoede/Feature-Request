@@ -2,15 +2,13 @@
 
 function FeaturesViewModel() {
 	var self = this;
-	self.featuresURI = 'http://localhost:5000/requests/api/v1.0/features';
+	//self.featuresURI = 'http://localhost:5000/requests/api/v1.0/features';
+	self.featuresURI = 'http://glowing-musk-2911.vagrantshare.com/requests/api/v1.0/features';
 	self.username = "michael";
 	self.password = "python";
 	self.features = ko.observableArray();
 	
 	self.ajax = function(uri, method, data) {
-		console.log(uri);
-		console.log(method);
-		console.log(data);
 		var request = {
 			url: uri,
 			type: method,
@@ -115,7 +113,6 @@ function FeaturesViewModel() {
 				self.features()[i].target_date(targetDate);
 				self.features()[i].product_area(data.features[i].product_area);
 			}
-			console.log(data.features);
 		});
 	}
 
@@ -132,7 +129,6 @@ function FeaturesViewModel() {
 				product_area: ko.observable(data.features[i].product_area)
 			});
 		}
-		console.log(data.features);
 	});
 
 	
@@ -203,15 +199,7 @@ function AddFeatureViewModel() {
 	
 	self.addFeature = function() {
 		$('#add').modal('hide');
-		console.log("going to getClient?");
 		var clientName = clientsViewModel.getClient();
-		console.log("back from getclient");
-		console.log(self.title());
-		console.log(self.description());
-		console.log(self.client());
-		console.log(self.client_priority());
-		console.log(targetDate);
-		console.log(self.product_area());
 		var targetDate = FormatDate(self.target_date());
 		featuresViewModel.add({
 			title: self.title(),
@@ -242,11 +230,9 @@ function EditFeatureViewModel() {
 	self.setFeature = function(feature) {
 		self.feature = feature;
 		var targetDate = feature.target_date();
-		console.log(targetDate);
 		var dayIndex = targetDate.indexOf(",") + 2;
 		var monthIndex = dayIndex + 3;
 		var yearIndex = targetDate.length - 5;
-		console.log(yearIndex);
 		var day = targetDate.substr(dayIndex, 2);
 		var month = targetDate.substr(monthIndex, 3);
 		var year = targetDate.substr(yearIndex, 4);
@@ -313,16 +299,14 @@ function EditFeatureViewModel() {
 
 function ClientsViewModel() {
 	var self = this;
-	self.clientsURI = 'http://localhost:5000/requests/api/v1.0/clients';
+	//self.clientsURI = 'http://localhost:5000/requests/api/v1.0/clients';
+	self.clientsURI = 'http://glowing-musk-2911.vagrantshare.com/requests/api/v1.0/clients';
 	self.username = "michael";
 	self.password = "python";
 	self.clients = ko.observableArray();
 	self.name = ko.observable();
 	
 	self.ajax = function(uri, method, data) {
-		console.log(uri);
-		console.log(method);
-		console.log(data);
 		var request = {
 			url: uri,
 			type: method,
@@ -337,7 +321,7 @@ function ClientsViewModel() {
 			},
 			success: function() {
 				if (method == "POST") {
-					alert("Client has been added");
+					alert(data.name + " has been added");
 				}
 			},
 			error: function(jqXHR) {
@@ -352,17 +336,17 @@ function ClientsViewModel() {
 	
 	self.setClients = function() {
 		self.ajax(self.clientsURI, 'GET').done(function(data) {
-			console.log(data);
-			console.log(data.clients.length);
 			for (var i = 0; i < data.clients.length; i++) {
-				console.log(data.clients[i].uri);
-				console.log(data.clients[i].name);
-				self.clients.push({
-					uri: ko.observable(data.clients[i].uri),
-					name: ko.observable(data.clients[i].name)
+				var match = ko.utils.arrayFirst(self.clients(), function(client) {
+					return client.uri() === data.clients[i].uri && client.name() === data.clients[i].name; 
 				});
+				if (!match) {
+					self.clients.push({
+						uri: ko.observable(data.clients[i].uri),
+						name: ko.observable(data.clients[i].name)
+					});
+				}
 			}
-			console.log(data.clients);
 		});
 	}
 	
@@ -387,7 +371,6 @@ function AddClientViewModel() {
 	
 	self.addClient = function() {
 		$('#addClient').modal('hide');
-		console.log(self.name());
 		clientsViewModel.add({
 			name: self.name()
 		});
